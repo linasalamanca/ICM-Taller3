@@ -20,12 +20,17 @@ class InicioSesionActivity : AppCompatActivity() {
     private lateinit var autenticacion: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_inicio_sesion)
         bindingIniSesion = ActivityInicioSesionBinding.inflate(layoutInflater)
+        setContentView(bindingIniSesion.root)
         autenticacion = Firebase.auth
 
-        inicioSesion()
+        bindingIniSesion.botonInicioSesion.setOnClickListener {
+            Log.i("CORRECCION", "Botón oprimido")
+            val email = bindingIniSesion.CorreoInput.text.toString()
+            val contrasena = bindingIniSesion.ContrasenaInput.text.toString()
+            inicioSesion(email, contrasena)
+        }
     }
 
     override fun onStart() {
@@ -34,18 +39,25 @@ class InicioSesionActivity : AppCompatActivity() {
         updateUI(usuarioActual)
     }
 
-    private fun inicioSesion(){
-        autenticacion.signInWithEmailAndPassword(bindingIniSesion.CorreoInput.text.toString(),
-            bindingIniSesion.ContrasenaInput.text.toString())
-            .addOnCompleteListener(this){ task ->
-                Log.d(TAG, "inicioCorreoSesion:onComplete:" + task.isSuccessful)
-                if(task.isSuccessful){
-                    Log.w(TAG, "inicioCorreoSesion: failure", task.exception)
-                    Toast.makeText(this, "Inicio de sesión fallido", Toast.LENGTH_SHORT).show()
-                    bindingIniSesion.CorreoInput.setText("")
-                    bindingIniSesion.ContrasenaInput.setText("")
+    private fun inicioSesion(email: String, contrasena: String){
+        Log.i("CORRECCION", "Ingreso a inicioSesion")
+        if(validarCampos() && emailValido(email)){
+            Log.i("CORRECCION", "Ingreso al if")
+            autenticacion.signInWithEmailAndPassword(email,contrasena)
+                .addOnCompleteListener(this){ task ->
+                    Log.i("CORRECCION", "Ingreso al lambda")
+                    Log.d(TAG, "inicioCorreoSesion:onComplete:" + task.isSuccessful)
+                    if(task.isSuccessful){
+                        Log.d(TAG, "inicioCorreoSesion: success")
+                        val usuario = autenticacion.currentUser
+                        updateUI(usuario)
+                    }else{
+                        Log.w(TAG, "inicioCorreoSesion: failure", task.exception)
+                        Toast.makeText(this, "Inicio de sesión fallido", Toast.LENGTH_SHORT).show()
+                        updateUI(null)
+                    }
                 }
-            }
+        }
     }
 
     private fun validarCampos(): Boolean{
@@ -66,6 +78,13 @@ class InicioSesionActivity : AppCompatActivity() {
             bindingIniSesion.ContrasenaInput.error = null
         }
         return valid
+    }
+
+    private fun emailValido(email: String): Boolean{
+        if(!email.contains("@") || !email.contains(".") || email.length < 5){
+            return false
+        }
+        return true
     }
 
     private fun updateUI(usuarioActual: FirebaseUser?) {

@@ -25,7 +25,7 @@
         android:text="Ingresa tu correo"
         android:layout_above="@+id/CorreoInput"
         android:layout_centerHorizontal="true"
-        android:textSize="20dp"
+        android:textSize="25dp"
         android:fontFamily="@font/song"/>
 
     <EditText
@@ -33,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Correo"
+        android:textSize="25dp"
         android:layout_centerInParent="true"
         android:fontFamily="@font/song"/>
 
@@ -43,7 +44,7 @@
         android:text="Ingresa tu contraseña"
         android:layout_below="@+id/CorreoInput"
         android:layout_centerHorizontal="true"
-        android:textSize="20dp"
+        android:textSize="25dp"
         android:fontFamily="@font/song"/>
 
     <EditText
@@ -53,6 +54,17 @@
         android:hint="Contraseña"
         android:layout_below="@+id/Contraseña"
         android:fontFamily="@font/song"
+        android:textSize="25dp"
         android:inputType="textPassword"
         android:ems="10"/>
+
+    <Button
+        android:id="@+id/botonInicioSesion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ContrasenaInput"
+        android:layout_centerHorizontal="true"
+        android:text="Inicia Sesión"
+        android:fontFamily=""/>
+
 </RelativeLayout>
