@@ -23,10 +23,20 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import com.google.firebase.auth.FirebaseAuth
+import android.content.ContentValues.TAG
+import androidx.core.net.toUri
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class RegistroActivity : AppCompatActivity() {
 
     private lateinit var bindingRegistro: ActivityRegistroBinding
+
+    //Registro autenticación y realtime database
+    private lateinit var autenticacion: FirebaseAuth
 
     //Camara y Galería
     private lateinit var activityResultLauncherCamara: ActivityResultLauncher<Intent>
@@ -41,16 +51,20 @@ class RegistroActivity : AppCompatActivity() {
         setContentView(R.layout.activity_registro)
         bindingRegistro = ActivityRegistroBinding.inflate(layoutInflater)
         setContentView(bindingRegistro.root)
+        autenticacion = Firebase.auth
 
+        val correo = bindingRegistro.CorreoInputR
+        val contrasena = bindingRegistro.ContrasenaInputR
         val btnCamara = bindingRegistro.CamaraBoton
         val btnGaleria = bindingRegistro.GaleriaBoton
         val imagenCuenta = bindingRegistro.imagenCargada
+        val btnRegistro = bindingRegistro.BotonRegistro
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         mLocationRequest = createLocationRequest()
 
-        permisosUbicacion()
         localizaciónActual()
+        permisosUbicacion()
 
         activarResultLauncherCamara(imagenCuenta)
         activarResultLauncherGaleria(imagenCuenta)
@@ -61,6 +75,10 @@ class RegistroActivity : AppCompatActivity() {
 
         btnGaleria.setOnClickListener {
             permisosGaleria()
+        }
+
+        btnRegistro.setOnClickListener {
+            registroUsarioNuevo(correo.text.toString(), contrasena.text.toString())
         }
     }
 
@@ -253,8 +271,35 @@ class RegistroActivity : AppCompatActivity() {
             setMinUpdateIntervalMillis(5000)
         }.build()
 
-    //Código relacionado al ciclo de vida
+    //Código de registro
+    private fun registroUsarioNuevo(email: String, contrasena: String){
+        autenticacion.createUserWithEmailAndPassword(email, contrasena)
+            .addOnCompleteListener(this){task ->
+                if(task.isSuccessful){
+                    Log.d(TAG, "crearUsuarioCorreo: onComplete: " + task.isSuccessful)
+                    val usuario = autenticacion.currentUser
+                    if(usuario != null){
+                        val actualizacionUsarios = UserProfileChangeRequest.Builder()
+                        actualizacionUsarios.setDisplayName(email)
+                        usuario.updateProfile(actualizacionUsarios.build())
+                        updateUI(usuario)
+                    }
+                }else{
+                    Toast.makeText(this, "Registro fallido", Toast.LENGTH_SHORT).show()
+                    task?.exception?.message?.let { Log.w(TAG, it)}
+                }
+            }
+    }
 
+    private fun updateUI(usuarioActual: FirebaseUser?) {
+        if(usuarioActual != null){
+            val intentInicio = Intent(this, MapaActivity::class.java)
+            intentInicio.putExtra("usuario", usuarioActual.email)
+            startActivity(intentInicio)
+        }
+    }
+
+    //Código relacionado al ciclo de vida
     override fun onPause() {
         super.onPause()
         if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
