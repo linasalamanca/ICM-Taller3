@@ -25,7 +25,7 @@
         android:text="Ingresa tu correo"
         android:layout_above="@+id/CorreoInput"
         android:layout_centerHorizontal="true"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:fontFamily="@font/song"/>
 
     <EditText
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Correo"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:layout_centerInParent="true"
         android:fontFamily="@font/song"/>
 
@@ -44,7 +44,7 @@
         android:text="Ingresa tu contraseña"
         android:layout_below="@+id/CorreoInput"
         android:layout_centerHorizontal="true"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:fontFamily="@font/song"/>
 
     <EditText
@@ -54,7 +54,7 @@
         android:hint="Contraseña"
         android:layout_below="@+id/Contraseña"
         android:fontFamily="@font/song"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:inputType="textPassword"
         android:ems="10"/>
 
@@ -66,5 +66,16 @@
         android:layout_centerHorizontal="true"
         android:text="Inicia Sesión"
         android:fontFamily=""/>
+
+    <TextView
+        android:id="@+id/Registro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¿No tienes cuenta? Regístrate"
+        android:fontFamily="@font/song"
+        android:textSize="20sp"
+        android:layout_below="@id/botonInicioSesion"
+        android:layout_centerHorizontal="true"
+        android:textColor="#9D00FF"/>
 
 </RelativeLayout>

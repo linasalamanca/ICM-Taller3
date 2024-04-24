@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistroActivity"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/TituloRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registro"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:textSize="40sp"
+        android:fontFamily="@font/rincklebelle"
+        android:layout_above="@+id/imagenCargada"/>
+
+    <ImageView
+        android:id="@+id/imagenCargada"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/NombreText"
+        android:src="@drawable/image_border"
+        />
+
+    <Button
+        android:id="@+id/GaleriaBoton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Galería"
+        android:layout_above="@id/NombreText"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/song"/>
+
+    <Button
+        android:id="@+id/CamaraBoton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cámara"
+        android:layout_above="@id/NombreText"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/song"/>
+
+    <TextView
+        android:id="@+id/NombreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="Nombre: "
+        android:textSize="25sp"
+        android:layout_above="@+id/ApellidoInputR"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"/>
+
+    <EditText
+        android:id="@+id/NombreInputR"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="Nombre"
+        android:textSize="25sp"
+        android:layout_above="@+id/ApellidoInputR"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/song"/>
+
+    <TextView
+        android:id="@+id/ApellidoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="Apellido: "
+        android:layout_above="@+id/CorreoInputR"
+        android:textSize="25sp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/ApellidoInputR"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="Apellido"
+        android:textSize="25sp"
+        android:layout_above="@id/CorreoInputR"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/song"/>
+
+    <TextView
+        android:id="@+id/CorreoText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="Correo: "
+        android:textSize="25sp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"/>
+
+    <EditText
+        android:id="@+id/CorreoInputR"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="Correo"
+        android:textSize="25sp"
+        android:layout_centerInParent="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/song"/>
+
+    <TextView
+        android:id="@+id/ContrasenaText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="Contraseña: "
+        android:textSize="25sp"
+        android:layout_below="@+id/CorreoInputR"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        />
+
+    <EditText
+        android:id="@+id/ContrasenaInputR"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:textSize="25sp"
+        android:layout_below="@id/CorreoInputR"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/song"/>
+
+    <TextView
+        android:id="@+id/IDText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="No de identificación: "
+        android:textSize="25sp"
+        android:layout_below="@+id/ContrasenaInputR"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        />
+
+    <EditText
+        android:id="@+id/IDInputR"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:hint="Identificación"
+        android:textSize="25sp"
+        android:layout_below="@id/ContrasenaInputR"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/song"/>
+
+    <TextView
+        android:id="@+id/LatitudText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="Tu latitud actual: "
+        android:textSize="25sp"
+        android:layout_below="@+id/IDInputR"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/LatitudDato"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="N/A"
+        android:textSize="25sp"
+        android:layout_below="@+id/IDInputR"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        />
+
+    <TextView
+        android:id="@+id/LongitudText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="Tu longitud actual: "
+        android:textSize="25sp"
+        android:layout_below="@+id/LatitudText"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        />
+
+    <TextView
+        android:id="@+id/LongitudDato"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/song"
+        android:text="N/A"
+        android:textSize="25sp"
+        android:layout_below="@+id/LatitudDato"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        />
+
+    <Button
+        android:id="@+id/BotonRegistro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/LongitudDato"
+        android:layout_centerHorizontal="true"
+        android:text="Registrarse"
+        android:fontFamily="@font/song"
+        android:layout_marginTop="15dp"/>
+
+</RelativeLayout>

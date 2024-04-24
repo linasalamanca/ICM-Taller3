@@ -31,6 +31,11 @@ class InicioSesionActivity : AppCompatActivity() {
             val contrasena = bindingIniSesion.ContrasenaInput.text.toString()
             inicioSesion(email, contrasena)
         }
+
+        bindingIniSesion.Registro.setOnClickListener {
+            val intent = Intent(this, RegistroActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onStart() {
