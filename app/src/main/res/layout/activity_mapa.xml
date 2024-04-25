@@ -21,13 +21,15 @@
         android:text="Ubicaciones"
         android:fontFamily="@font/rincklebelle"
         android:textSize="40sp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/osmMap"/>
 
     <org.osmdroid.views.MapView
         android:id="@+id/osmMap"
         android:layout_width="match_parent"
         android:layout_height="650dp"
         android:layout_alignParentBottom="true"
-        tools:ignore="MissingClass" />
+        tools:ignore="MissingClass"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

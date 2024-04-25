@@ -1,6 +1,7 @@
 package com.example.taller3
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -21,6 +22,10 @@ import com.example.taller3.databinding.ActivityMapaBinding
 import com.google.common.io.Resources
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import org.json.JSONObject
 import org.osmdroid.api.IMapController
@@ -33,13 +38,22 @@ import java.io.InputStream
 
 class MapaActivity : AppCompatActivity() {
 
+    companion object{
+        const val PATH_USERS="users/"
+    }
+
     private lateinit var bindingMapa: ActivityMapaBinding
+
+    //Variables relacionadas a firebase
+    private val database = FirebaseDatabase.getInstance()
+    private lateinit var referencia: DatabaseReference
     private lateinit var autenticacion: FirebaseAuth
-    private val startPoint = org.osmdroid.util.GeoPoint(4.628593, -74.065041)
 
     //Coordenadas
     private var latitud: Double = 0.0
     private var longitud: Double = 0.0
+    private val startPoint = org.osmdroid.util.GeoPoint(4.628593, -74.065041)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindingMapa = ActivityMapaBinding.inflate(layoutInflater)
@@ -109,6 +123,7 @@ class MapaActivity : AppCompatActivity() {
             actualizarMarcadorUbiActual(latitud, longitud)
             startPoint.latitude = latitud
             startPoint.longitude = longitud
+            actualizarUbicacionUsuario(latitud, longitud)
         }
     }
 
@@ -157,6 +172,16 @@ class MapaActivity : AppCompatActivity() {
         val bitmap = (icono as BitmapDrawable).bitmap
         val bitmapCambiado = Bitmap.createScaledBitmap(bitmap, 50, 50, false)
         return BitmapDrawable(resources, bitmapCambiado)
+    }
+
+    //Actualización ubicación en el Realtime database
+    private fun actualizarUbicacionUsuario(latitud: Double, longitud: Double){
+        val uid = autenticacion.currentUser?.uid
+        if (uid != null){
+            val usuarioActual = database.getReference(PATH_USERS + uid)
+            usuarioActual.child("latitud").setValue(latitud)
+            usuarioActual.child("longitud").setValue(longitud)
+        }
     }
 
     //Código relacionado a los archivos JSON
