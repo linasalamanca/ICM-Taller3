@@ -25,9 +25,11 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.firebase.auth.FirebaseAuth
 import android.content.ContentValues.TAG
+import android.text.TextUtils
 import androidx.core.net.toUri
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
@@ -72,6 +74,8 @@ class RegistroActivity : AppCompatActivity() {
         autenticacion = Firebase.auth
         storage = Firebase.storage
 
+        guardarUriImagen(null)
+
         val correo = bindingRegistro.CorreoInputR
         val contrasena = bindingRegistro.ContrasenaInputR
         val btnCamara = bindingRegistro.CamaraBoton
@@ -97,8 +101,81 @@ class RegistroActivity : AppCompatActivity() {
         }
 
         btnRegistro.setOnClickListener {
-            registroUsarioAuthentication(correo.text.toString(), contrasena.text.toString())
+            verificarCorreoExistente(correo.text.toString()){estadoCorreo ->
+                if (validarCampos() && !estadoCorreo){
+                    registroUsarioAuthentication(correo.text.toString(), contrasena.text.toString())
+                }
+            }
         }
+    }
+
+    //Validación de campos llenados
+
+    private fun verificarCorreoExistente(correo: String, onComplete: (Boolean) -> Unit) {
+        autenticacion.fetchSignInMethodsForEmail(correo)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val signInMethods = task.result?.signInMethods
+                    onComplete(signInMethods?.isEmpty() == true)
+                    Toast.makeText(this, "El correo electrónico ya está registrado", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Error al verificar el correo electrónico
+                    Toast.makeText(this, "Error al verificar el correo electrónico", Toast.LENGTH_SHORT).show()
+                    onComplete(false)
+                }
+            }
+    }
+
+    private fun validarCampos(): Boolean{
+        var valid = true
+
+        val uriImagen = obtenerUriImagen()
+        if(uriImagen == null){
+            Toast.makeText(this, "Imagen requerida", Toast.LENGTH_SHORT).show()
+            valid = false
+        }
+
+        val nombre = bindingRegistro.NombreInputR.text.toString()
+        if(TextUtils.isEmpty(nombre)){
+            bindingRegistro.NombreInputR.error = "Requerido."
+            valid = false
+        }else{
+            bindingRegistro.NombreInputR.error = null
+        }
+
+        val apellido = bindingRegistro.ApellidoInputR.text.toString()
+        if(TextUtils.isEmpty(apellido)){
+            bindingRegistro.ApellidoInputR.error = "Requerido."
+            valid = false
+        }else{
+            bindingRegistro.ApellidoInputR.error = null
+        }
+
+        val email = bindingRegistro.CorreoInputR.text.toString()
+        if(TextUtils.isEmpty(email)){
+            bindingRegistro.CorreoInputR.error = "Requerido."
+            valid = false
+        }else{
+            bindingRegistro.CorreoInputR.error = null
+        }
+
+        val contrasena = bindingRegistro.ContrasenaInputR.text.toString()
+        if(TextUtils.isEmpty(contrasena)){
+            bindingRegistro.ContrasenaInputR.error = "Requerido."
+            valid = false
+        }else{
+            bindingRegistro.ContrasenaInputR.error = null
+        }
+
+        val noID = bindingRegistro.IDInputR.text.toString()
+        if(TextUtils.isEmpty(noID)){
+            bindingRegistro.IDInputR.error = "Requerido."
+            valid = false
+        }else{
+            bindingRegistro.IDInputR.error = null
+        }
+
+        return valid
     }
 
     //Código relacionado a todos los permisos
@@ -248,7 +325,7 @@ class RegistroActivity : AppCompatActivity() {
     }
 
     //URI de las imágenes
-    private fun guardarUriImagen(uri: String) {
+    private fun guardarUriImagen(uri: String?) {
         val sharedPreferences = getSharedPreferences("preferencias_imagen", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("uri_imagen", uri)
