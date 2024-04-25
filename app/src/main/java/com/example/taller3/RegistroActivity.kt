@@ -25,13 +25,19 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.firebase.auth.FirebaseAuth
 import android.content.ContentValues.TAG
-import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
 
 class RegistroActivity : AppCompatActivity() {
+
+    //Companion object, carpeta users para el realtime database
+    companion object{
+        const val PATH_USERS="users/"
+    }
 
     private lateinit var bindingRegistro: ActivityRegistroBinding
 
@@ -46,6 +52,11 @@ class RegistroActivity : AppCompatActivity() {
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var mLocationRequest: LocationRequest
     private lateinit var mLocationCallback: LocationCallback
+
+    //Realtime Database
+    private val database = FirebaseDatabase.getInstance()
+    private lateinit var referencia: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registro)
@@ -78,7 +89,7 @@ class RegistroActivity : AppCompatActivity() {
         }
 
         btnRegistro.setOnClickListener {
-            registroUsarioNuevo(correo.text.toString(), contrasena.text.toString())
+            registroUsarioAuthentication(correo.text.toString(), contrasena.text.toString())
         }
     }
 
@@ -272,7 +283,7 @@ class RegistroActivity : AppCompatActivity() {
         }.build()
 
     //Código de registro
-    private fun registroUsarioNuevo(email: String, contrasena: String){
+    private fun registroUsarioAuthentication(email: String, contrasena: String){
         autenticacion.createUserWithEmailAndPassword(email, contrasena)
             .addOnCompleteListener(this){task ->
                 if(task.isSuccessful){
@@ -283,6 +294,7 @@ class RegistroActivity : AppCompatActivity() {
                         actualizacionUsarios.setDisplayName(email)
                         usuario.updateProfile(actualizacionUsarios.build())
                         updateUI(usuario)
+                        registrarUsarioRealtimeDatabase()
                     }
                 }else{
                     Toast.makeText(this, "Registro fallido", Toast.LENGTH_SHORT).show()
@@ -297,6 +309,24 @@ class RegistroActivity : AppCompatActivity() {
             intentInicio.putExtra("usuario", usuarioActual.email)
             startActivity(intentInicio)
         }
+    }
+
+    //Código relacionado con el realtime database
+    private fun registrarUsarioRealtimeDatabase(){
+        val nombre = bindingRegistro.NombreInputR
+        val apellido = bindingRegistro.ApellidoInputR
+        val id = bindingRegistro.IDInputR
+        val latitud = bindingRegistro.LatitudDato
+        val longitud = bindingRegistro.LongitudDato
+
+        val usuarioRegistro = Usuario()
+        usuarioRegistro.nombre = nombre.text.toString()
+        usuarioRegistro.apellido = apellido.text.toString()
+        usuarioRegistro.numeroIdentificacion = id.text.toString().toLong()
+        usuarioRegistro.latitud = latitud.text.toString().toDouble()
+        usuarioRegistro.longitud = longitud.text.toString().toDouble()
+        referencia = database.getReference(PATH_USERS+autenticacion.currentUser!!.uid)
+        referencia.setValue(usuarioRegistro)
     }
 
     //Código relacionado al ciclo de vida
