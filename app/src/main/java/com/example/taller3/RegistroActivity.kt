@@ -25,12 +25,18 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.firebase.auth.FirebaseAuth
 import android.content.ContentValues.TAG
+import androidx.core.net.toUri
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import com.google.firebase.storage.ktx.storage
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -41,8 +47,9 @@ class RegistroActivity : AppCompatActivity() {
 
     private lateinit var bindingRegistro: ActivityRegistroBinding
 
-    //Registro autenticación y realtime database
+    //Registro autenticación, realtime database y storage
     private lateinit var autenticacion: FirebaseAuth
+    private lateinit var storage: FirebaseStorage
 
     //Camara y Galería
     private lateinit var activityResultLauncherCamara: ActivityResultLauncher<Intent>
@@ -63,6 +70,7 @@ class RegistroActivity : AppCompatActivity() {
         bindingRegistro = ActivityRegistroBinding.inflate(layoutInflater)
         setContentView(bindingRegistro.root)
         autenticacion = Firebase.auth
+        storage = Firebase.storage
 
         val correo = bindingRegistro.CorreoInputR
         val contrasena = bindingRegistro.ContrasenaInputR
@@ -294,7 +302,8 @@ class RegistroActivity : AppCompatActivity() {
                         actualizacionUsarios.setDisplayName(email)
                         usuario.updateProfile(actualizacionUsarios.build())
                         updateUI(usuario)
-                        registrarUsarioRealtimeDatabase()
+                        registrarUsuarioRealtimeDatabase()
+                        registrarUsuarioFirebaseStorage()
                     }
                 }else{
                     Toast.makeText(this, "Registro fallido", Toast.LENGTH_SHORT).show()
@@ -312,7 +321,7 @@ class RegistroActivity : AppCompatActivity() {
     }
 
     //Código relacionado con el realtime database
-    private fun registrarUsarioRealtimeDatabase(){
+    private fun registrarUsuarioRealtimeDatabase(){
         val nombre = bindingRegistro.NombreInputR
         val apellido = bindingRegistro.ApellidoInputR
         val id = bindingRegistro.IDInputR
@@ -325,8 +334,26 @@ class RegistroActivity : AppCompatActivity() {
         usuarioRegistro.numeroIdentificacion = id.text.toString().toLong()
         usuarioRegistro.latitud = latitud.text.toString().toDouble()
         usuarioRegistro.longitud = longitud.text.toString().toDouble()
+        usuarioRegistro.disponible = true
         referencia = database.getReference(PATH_USERS+autenticacion.currentUser!!.uid)
         referencia.setValue(usuarioRegistro)
+    }
+
+    //Código relacionado a la carga de imagen en Firebase Storage
+    private fun registrarUsuarioFirebaseStorage(){
+        val uriImagen = obtenerUriImagen()
+        val imagenRef = storage.reference.child("images/${autenticacion.currentUser!!.uid}")
+        imagenRef.putFile(uriImagen!!.toUri())
+            .addOnSuccessListener(object: OnSuccessListener<UploadTask.TaskSnapshot>{
+                override fun onSuccess(taskSnapshot: UploadTask.TaskSnapshot){
+                    Log.i("STORAGE", "Imagen cargada exitosamente")
+                }
+            })
+            .addOnFailureListener(object: OnFailureListener {
+                override fun onFailure(exception: Exception){
+
+                }
+            })
     }
 
     //Código relacionado al ciclo de vida

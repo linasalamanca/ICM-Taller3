@@ -5,7 +5,8 @@ data class Usuario(
     var apellido: String,
     var numeroIdentificacion: Long,
     var latitud: Double,
-    var longitud: Double
+    var longitud: Double,
+    var disponible: Boolean
 ) {
-    constructor() : this("", "", 0L, 0.0, 0.0) // Constructor sin argumentos
+    constructor() : this("", "", 0L, 0.0, 0.0, true) // Constructor sin argumentos
 }

@@ -52,6 +52,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("com.github.bumptech.glide:glide:4.13.0")
     implementation(libs.firebase.database)
+    implementation(libs.firebase.storage)
     kapt("com.github.bumptech.glide:compiler:4.13.0")
 
     implementation(libs.androidx.core.ktx)
