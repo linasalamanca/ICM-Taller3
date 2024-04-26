@@ -116,8 +116,13 @@ class RegistroActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val signInMethods = task.result?.signInMethods
-                    onComplete(signInMethods?.isEmpty() == true)
-                    Toast.makeText(this, "El correo electrónico ya está registrado", Toast.LENGTH_SHORT).show()
+                    if (signInMethods?.isEmpty() == true) {
+                        Toast.makeText(this, "El correo electrónico está disponible para registro", Toast.LENGTH_SHORT).show()
+                        onComplete(false)
+                    } else {
+                        Toast.makeText(this, "El correo electrónico ya está registrado", Toast.LENGTH_SHORT).show()
+                        onComplete(true)
+                    }
                 } else {
                     // Error al verificar el correo electrónico
                     Toast.makeText(this, "Error al verificar el correo electrónico", Toast.LENGTH_SHORT).show()
