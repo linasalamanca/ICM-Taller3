@@ -14,6 +14,9 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -35,6 +38,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Marker
 import java.io.IOException
 import java.io.InputStream
+import androidx.appcompat.widget.Toolbar
 
 class MapaActivity : AppCompatActivity() {
 
@@ -49,6 +53,10 @@ class MapaActivity : AppCompatActivity() {
     private lateinit var referencia: DatabaseReference
     private lateinit var autenticacion: FirebaseAuth
 
+    private lateinit var auth: FirebaseAuth
+    private var location: Location? = null
+    private lateinit var changeService: CambioDisponibilidad
+
     //Coordenadas
     private var latitud: Double = 0.0
     private var longitud: Double = 0.0
@@ -56,9 +64,15 @@ class MapaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //setContentView(R.menu.menu)
         bindingMapa = ActivityMapaBinding.inflate(layoutInflater)
         setContentView(bindingMapa.root)
         autenticacion = Firebase.auth
+        auth = autenticacion
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        referencia = database.getReference(PATH_USERS + auth.currentUser!!.uid)
+        referencia.child("available").setValue(true)
 
         //OSM
         val ctx = applicationContext
@@ -66,6 +80,8 @@ class MapaActivity : AppCompatActivity() {
         Configuration.getInstance().userAgentValue = packageName
         bindingMapa.osmMap.setTileSource(TileSourceFactory.MAPNIK)
         bindingMapa.osmMap.setMultiTouchControls(true)
+        changeService = CambioDisponibilidad(this)
+        changeService.startListening()
 
         permisos()
         actualizarMarcadorJSON()
@@ -77,6 +93,53 @@ class MapaActivity : AppCompatActivity() {
             val intent = Intent(this, InicioSesionActivity::class.java)
             startActivity(intent)
             finish()
+        }
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu,menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean
+    {
+        // Handle item selection
+        return when (item.itemId)
+        {
+            R.id.menuLogOut ->
+            {
+                //myRef = database.getReference(PATH_USERS + auth.currentUser!!.uid)
+                referencia.child("disponible").setValue(false)
+                auth.signOut()
+                val intentLogOut = Intent(this, InicioSesionActivity::class.java)
+                intentLogOut.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                changeService.stopListening()
+                startActivity(intentLogOut)
+                finish()
+
+                true
+            }
+            R.id.menuToggleStatus ->
+            {
+                //myRef = database.getReference(PATH_USERS + auth.currentUser!!.uid)
+                referencia.child("disponible").get().addOnSuccessListener { availableSnapshot ->
+                    val isAvailable = availableSnapshot.getValue(Boolean::class.java) ?: false
+                    referencia.child("disponible").setValue(!isAvailable)
+                    val statusText = if (!isAvailable) "disponible" else "no disponible"
+                    Toast.makeText(this, "Ahora te encuentras $statusText", Toast.LENGTH_SHORT).show()
+                }
+                true
+            }
+            R.id.menuAvailableUsers ->
+            {
+                val intentAvailableUsers = Intent(this, UsuariosActivosActivity::class.java)
+                changeService.stopListening()
+                startActivity(intentAvailableUsers)
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -200,6 +263,8 @@ class MapaActivity : AppCompatActivity() {
         }
         return json
     }
+
+
 
     //Código relacionado al ciclo de vida
     override fun onResume() {

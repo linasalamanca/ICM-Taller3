@@ -8,21 +8,20 @@
     tools:context=".MapaActivity"
     android:padding="15dp">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
     <Button
         android:id="@+id/Salir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
         android:text="Salir"/>
-
-    <TextView
-        android:id="@+id/TituloMapa"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ubicaciones"
-        android:fontFamily="@font/rincklebelle"
-        android:textSize="40sp"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/osmMap"/>
 
     <org.osmdroid.views.MapView
         android:id="@+id/osmMap"
@@ -30,6 +29,16 @@
         android:layout_height="650dp"
         android:layout_alignParentBottom="true"
         tools:ignore="MissingClass"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/TituloMapa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/rincklebelle"
+            android:text="Ubicaciones"
+            android:textSize="40sp" />
+    </org.osmdroid.views.MapView>
 
 </RelativeLayout>
