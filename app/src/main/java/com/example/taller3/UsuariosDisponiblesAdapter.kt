@@ -4,6 +4,7 @@ package com.example.taller3
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class UsuariosDisponiblesAdapter(
     pContext: Context,
@@ -21,7 +26,21 @@ class UsuariosDisponiblesAdapter(
     var usuariosActivos : ArrayList<Usuario> = pActiveUsers
 
     init {
-        // Considera añadir aquí un listener a Firebase para actualizar usuariosActivos
+        val databaseReference = FirebaseDatabase.getInstance().getReference("usuariosActivos")
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                usuariosActivos.clear()
+                for (postSnapshot in snapshot.children) {
+                    val usuario = postSnapshot.getValue(Usuario::class.java)
+                    usuario?.let { usuariosActivos.add(it) }
+                }
+                notifyDataSetChanged()
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("FirebaseAdapter", "loadPost:onCancelled", databaseError.toException())
+            }
+        })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -33,10 +52,9 @@ class UsuariosDisponiblesAdapter(
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val usuario = usuariosActivos[position]
         holder.nameTxtView.text = "${usuario.nombre} ${usuario.apellido}"
-        // Considera usar Glide o Picasso para cargar imágenes desde una URL si está en Firebase Storage
         holder.locationBtn.setOnClickListener {
             val trackUserIntent = Intent(context, TrackUserActivity::class.java)
-            trackUserIntent.putExtra("trackedUid", usuario.uid)  // Asegúrate de que Usuario.kt tenga un uid
+            trackUserIntent.putExtra("trackedid", usuario.numeroIdentificacion)
             context.startActivity(trackUserIntent)
         }
     }
