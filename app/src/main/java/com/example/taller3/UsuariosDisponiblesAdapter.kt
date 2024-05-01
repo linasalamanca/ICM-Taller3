@@ -29,7 +29,6 @@ class UsuariosDisponiblesAdapter(
         val databaseReference = FirebaseDatabase.getInstance().getReference("usuariosActivos")
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                usuariosActivos.clear()
                 for (postSnapshot in snapshot.children) {
                     val usuario = postSnapshot.getValue(Usuario::class.java)
                     usuario?.let { usuariosActivos.add(it) }

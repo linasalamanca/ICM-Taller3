@@ -86,15 +86,6 @@ class MapaActivity : AppCompatActivity() {
         permisos()
         actualizarMarcadorJSON()
 
-        //Código momentáneo para cerrar sesión
-
-        bindingMapa.Salir.setOnClickListener {
-            autenticacion.signOut()
-            val intent = Intent(this, InicioSesionActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

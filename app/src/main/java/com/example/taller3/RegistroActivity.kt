@@ -411,6 +411,7 @@ class RegistroActivity : AppCompatActivity() {
         val longitud = bindingRegistro.LongitudDato
 
         val usuarioRegistro = Usuario()
+        usuarioRegistro.uid = autenticacion.currentUser!!.uid
         usuarioRegistro.nombre = nombre.text.toString()
         usuarioRegistro.apellido = apellido.text.toString()
         usuarioRegistro.numeroIdentificacion = id.text.toString().toLong()

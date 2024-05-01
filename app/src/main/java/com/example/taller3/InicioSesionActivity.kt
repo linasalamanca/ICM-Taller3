@@ -17,13 +17,13 @@ class InicioSesionActivity : AppCompatActivity() {
 
     private lateinit var bindingIniSesion: ActivityInicioSesionBinding
 
-    private lateinit var autenticacion: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inicio_sesion)
         bindingIniSesion = ActivityInicioSesionBinding.inflate(layoutInflater)
         setContentView(bindingIniSesion.root)
-        autenticacion = Firebase.auth
+        auth = Firebase.auth
 
         bindingIniSesion.botonInicioSesion.setOnClickListener {
             Log.i("CORRECCION", "Botón oprimido")
@@ -40,7 +40,7 @@ class InicioSesionActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        val usuarioActual = autenticacion.currentUser
+        val usuarioActual = auth.currentUser
         updateUI(usuarioActual)
     }
 
@@ -48,13 +48,13 @@ class InicioSesionActivity : AppCompatActivity() {
         Log.i("CORRECCION", "Ingreso a inicioSesion")
         if(validarCampos() && emailValido(email)){
             Log.i("CORRECCION", "Ingreso al if")
-            autenticacion.signInWithEmailAndPassword(email,contrasena)
+            auth.signInWithEmailAndPassword(email,contrasena)
                 .addOnCompleteListener(this){ task ->
                     Log.i("CORRECCION", "Ingreso al lambda")
                     Log.d(TAG, "inicioCorreoSesion:onComplete:" + task.isSuccessful)
                     if(task.isSuccessful){
                         Log.d(TAG, "inicioCorreoSesion: success")
-                        val usuario = autenticacion.currentUser
+                        val usuario = auth.currentUser
                         updateUI(usuario)
                     }else{
                         Log.w(TAG, "inicioCorreoSesion: failure", task.exception)
