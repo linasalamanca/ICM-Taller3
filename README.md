@@ -18,3 +18,6 @@ El taller es una aplicación móvil desarrollada como parte de un taller de comp
 - Gestión de sesiones para cerrar sesión, establecerse como disponible o desconectado.
 - Lista de usuarios disponibles con opción de seguimiento en tiempo real y visualización de distancia.
 - Notificaciones de cambios de estado de usuarios disponibles.
+
+##Link Video
+https://youtu.be/8YqTSsGwhSA
