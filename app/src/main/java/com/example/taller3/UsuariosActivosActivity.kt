@@ -23,9 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.io.IOException
-import java.net.HttpURLConnection
 import java.net.URL
-import com.example.taller3.UsuariosDisponiblesAdapter
 
 class UsuariosActivosActivity : AppCompatActivity()
 {
