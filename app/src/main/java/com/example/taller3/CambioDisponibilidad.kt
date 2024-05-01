@@ -24,6 +24,8 @@ class CambioDisponibilidad(private val context: Context) {
                 val message = "El usuario ${user.nombre} ${user.apellido} ahora se encuentra disponible"
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
+            val message = "El usuario ${user?.nombre} ${user?.apellido} no se encuentra disponible"
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
 
         override fun onChildRemoved(snapshot: DataSnapshot) {

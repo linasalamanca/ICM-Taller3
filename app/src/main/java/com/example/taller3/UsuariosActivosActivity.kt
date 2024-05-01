@@ -56,8 +56,8 @@ class UsuariosActivosActivity : AppCompatActivity()
                     profilePicsBitmaps.clear()
                     for (userSnapshot in dataSnapshot.children) {
                         val user = userSnapshot.getValue(Usuario::class.java)
-                        if (auth.currentUser != null && user != null && user.disponible && user.numeroIdentificacion.toString() != auth.currentUser!!.uid) {
-                            val imageRef = storage.reference.child("images/profile/${user.numeroIdentificacion}/image.jpg")
+                        if (auth.currentUser != null && user != null && user.disponible && auth.currentUser?.uid != auth.currentUser!!.uid) {
+                            val imageRef = storage.reference.child("images/profile/${auth.currentUser!!.uid}/image.jpg")
                             val bitmap = downloadImageFromUrl(imageRef.downloadUrl.await())
                             if (bitmap != null) {
                                 withContext(Dispatchers.Main) {
@@ -66,7 +66,7 @@ class UsuariosActivosActivity : AppCompatActivity()
                                     recViewAdapter.notifyDataSetChanged()
                                 }
                             } else {
-                                Log.e(TAG, "Failed to download image for user ${user.numeroIdentificacion}")
+                                Log.e(TAG, "Failed to download image for user ${auth.currentUser!!.uid}")
                             }
                         }
                     }
